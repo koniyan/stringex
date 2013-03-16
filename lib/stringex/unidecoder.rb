@@ -11,19 +11,23 @@ module Stringex
       # Returns string with its UTF-8 characters transliterated to ASCII ones
       #
       # You're probably better off just using the added String#to_ascii
-      def decode(string)
+      def decode(string, options = {})
         string.gsub(/[^\x00-\x00]/u) do |codepoint|
-          if localized = translate(codepoint)
-            localized
-          else
-            begin
-              unpacked = codepoint.unpack("U")[0]
-              CODEPOINTS[code_group(unpacked)][grouped_point(unpacked)]
-            rescue
-              # Hopefully this won't come up much
-              # TODO: Make this note something to the user that is reportable to me perhaps
-              "?"
+          unless options[:skip_unicoder] == true
+            if localized = translate(codepoint)
+              localized
+            else
+              begin
+                unpacked = codepoint.unpack("U")[0]
+                CODEPOINTS[code_group(unpacked)][grouped_point(unpacked)]
+              rescue
+                # Hopefully this won't come up much
+                # TODO: Make this note something to the user that is reportable to me perhaps
+                "?"
+              end
             end
+          else
+            ""
           end
         end
       end
@@ -46,7 +50,7 @@ module Stringex
       end
 
     private
-    
+
       def translate(codepoint)
         Localization.translate(:transliterations, codepoint)
       end
@@ -70,8 +74,8 @@ module Stringex
     # Returns string with its UTF-8 characters transliterated to ASCII ones. Example:
     #
     #   "⠋⠗⠁⠝⠉⠑".to_ascii #=> "france"
-    def to_ascii
-      Stringex::Unidecoder.decode(self)
+    def to_ascii(options = {})
+      Stringex::Unidecoder.decode(self, options)
     end
   end
 end

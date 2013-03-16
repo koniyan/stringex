@@ -2,7 +2,7 @@
 
 module Stringex
   module StringExtensions
-    DEFAULT_CHARACTER_CONVERSIONS = 
+    DEFAULT_CHARACTER_CONVERSIONS =
       {
         :and           => "and",
         :number        => "number",
@@ -249,7 +249,7 @@ module Stringex
           convert_vulgar_fractions.
           convert_miscellaneous_html_entities.
           convert_miscellaneous_characters(options).
-          to_ascii.
+          to_ascii(options).
           # NOTE: String#to_ascii may convert some Unicode characters to ascii we'd already transliterated
           # so we need to do it again just to be safe
           convert_miscellaneous_characters(options).
